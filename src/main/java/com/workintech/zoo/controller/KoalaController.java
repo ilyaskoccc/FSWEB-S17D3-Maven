@@ -1,8 +1,8 @@
 package com.workintech.zoo.controller;
 
-import com.workintech.zoo.entity.Kangaroo;
 import com.workintech.zoo.entity.Koala;
 import com.workintech.zoo.validations.ZooKangarooValidation;
+import com.workintech.zoo.validations.ZooKoalaValidation;
 import jakarta.annotation.PostConstruct;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,17 +27,31 @@ public class KoalaController {
 
     @GetMapping("/{id}")
     public Koala find(@PathVariable("id") Integer id) {
+        ZooKoalaValidation.isIdValid(id);
+        ZooKoalaValidation.checkKoalaExistence(koalas, id, true);
        return koalas.get(id);
     }
 
     @PostMapping
     public Koala save(@RequestBody Koala koala) {
+        ZooKoalaValidation.checkKoalaExistence(koalas, koala.getId(), false);
+        ZooKoalaValidation.checkKoalaId(koala.getId());
+        ZooKoalaValidation.checkKoalaName(koala.getName());
+        ZooKoalaValidation.checkKoalaSleepHour(koala.getSleepHour());
+        ZooKoalaValidation.checkKoalaWeight(koala.getWeight());
+        ZooKoalaValidation.checkKoalaGender(koala.getGender());
         koalas.put(koala.getId(), koala);
         return koalas.get(koala.getId());
     }
 
     @PutMapping("/{id}")
     public Koala update(@PathVariable Integer id, @RequestBody Koala koala) {
+        ZooKoalaValidation.checkKoalaExistence(koalas, koala.getId(), false);
+        ZooKoalaValidation.checkKoalaId(koala.getId());
+        ZooKoalaValidation.checkKoalaName(koala.getName());
+        ZooKoalaValidation.checkKoalaSleepHour(koala.getSleepHour());
+        ZooKoalaValidation.checkKoalaWeight(koala.getWeight());
+        ZooKoalaValidation.checkKoalaGender(koala.getGender());
         koala.setId(id);
         if(koalas.containsKey(id)) {
             koalas.put(id, koala);
@@ -49,6 +63,8 @@ public class KoalaController {
 
     @DeleteMapping("/{id}")
     public Koala delete(@PathVariable Integer id) {
+        ZooKoalaValidation.isIdValid(id);
+        ZooKoalaValidation.checkKoalaExistence(koalas, id, true);
         return koalas.remove(id);
     }
 }
